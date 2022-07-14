@@ -30,5 +30,5 @@
     "invokeScheduler": "export $(grep -v '^#' .env | xargs); serverless invoke --function scheduler",
     "localScrape": "node ./src/parser/__test__/scrape.js"
   },
-  "license": "ISC"
+  "license": "MIT"
 }
