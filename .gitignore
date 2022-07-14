@@ -1,0 +1,12 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+.env
+.DS_Store
+
+# Scraped local HTML files
+./src/parser/__test__/local.html

@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "name": "40dopbot",
+  "version": "1.0.0",
+  "description": "Telegram bot that sends daily prayer guides pulled from the 40 Days of Prayer website",
+  "main": "src/handler.ts",
+  "dependencies": {
+    "aws-sdk": "^2.1171.0",
+    "axios": "^0.27.2",
+    "jsdom": "^20.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.7.1",
+    "serverless-plugin-typescript": "^2.1.2",
+    "typescript": "^4.7.4"
+  },
+  "scripts-info": {
+    "format": "Format source code",
+    "deploy": "Deploy bot via serverless",
+    "createDynamoTables": "Runs script to create the necessary DynamoDB tables on AWS. To be run once when setting up the AWS environment.",
+    "invokeScraper": "Invokes the scraper AWS Lambda via serverless",
+    "invokeScheduler": "Invokes the scheduler AWS Lambda via serverless",
+    "localScrape": "Runs script to get and save today's HTML content"
+  },
+  "scripts": {
+    "format": "prettier --write \"src/**/*.{js,ts}\"",
+    "deploy": "export $(grep -v '^#' .env | xargs); sls deploy",
+    "createDynamoTables": "export $(grep -v '^#' .env | xargs); tsc ./src/database/dynamodb.ts; node -e 'require(\"./src/database/dynamodb.js\").createTables()'; rm ./src/database/dynamodb.js",
+    "invokeScraper": "export $(grep -v '^#' .env | xargs); serverless invoke --function scraper",
+    "invokeScheduler": "export $(grep -v '^#' .env | xargs); serverless invoke --function scheduler",
+    "localScrape": "node ./src/parser/__test__/scrape.js"
+  },
+  "license": "ISC"
+}

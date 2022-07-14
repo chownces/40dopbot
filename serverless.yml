@@ -1,0 +1,47 @@
+service: fourty-dop-bot
+frameworkVersion: '3'
+plugins:
+  - serverless-plugin-typescript
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: ap-southeast-1
+  environment:
+    TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
+    ADMIN_CHAT_ID: ${env:ADMIN_CHAT_ID}
+    WEBSITE_URL_ENGLISH: ${env:WEBSITE_URL_ENGLISH}
+    WEBSITE_URL_CHINESE: ${env:WEBSITE_URL_CHINESE}
+  versionFunctions: false
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: 'arn:aws:dynamodb:ap-southeast-1:*:*'
+
+package:
+  exclude:
+    - src/parser/__test__/**
+
+functions:
+  main:
+    handler: src/handler.main
+    description: Handles user messages and bot replies
+    events:
+      - httpApi: 'POST /main'
+  scraper:
+    handler: src/handler.scraper
+    description: Scrapes and caches website content daily
+    events:
+      - schedule: cron(01 16 * * ? *) # 1601hrs UTC every day
+  scheduler:
+    handler: src/handler.scheduler
+    description: Sends scheduled message to users daily
+    events:
+      - schedule: cron(00 22 * * ? *) # 2200hrs UTC every day
